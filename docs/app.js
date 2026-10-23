@@ -10,7 +10,7 @@ const DIFFICULTIES = { easy: 'かんたん', normal: 'ふつう', hard: 'むず�
 const STORAGE_KEY = 'aimforge.sessions.v1';
 const arena = $('#arena'), canvas = $('#arena-canvas'), ctx = canvas.getContext('2d');
 let records = readRecords(), session = null, countdownEnd = null;
-let width = 800, height = 400, feedbackTimer, toastTimer, audio = null;
+let width = 800, height = 400, toastTimer, audio = null;
 
 function readRecords() {
   try {
@@ -43,7 +43,6 @@ function setControls(disabled) {
 }
 function updateSettings() {
   const {mode,duration} = settings();
-  $('#mode-instruction').textContent = MODES[mode].instruction;
   $('#hud-accuracy-label').textContent = mode === 'tracking' ? '追従率' : '命中率';
   arena.setAttribute('aria-label', MODES[mode].instruction);
   if (!busy()) {
@@ -60,7 +59,8 @@ function start() {
   session = null;
   countdownEnd = performance.now() + 3000;
   setControls(true);
-  $('#idle-caption').hidden = true;
+  $('#start-target').hidden = true;
+  $('#hud').hidden = false;
   $('#game-overlay').hidden = false;
   $('#overlay-content').innerHTML = '<div class="countdown-number">3</div>';
   $('#start-button').textContent = '中断';
@@ -81,10 +81,10 @@ function reset() {
   if (session) { session.pointer.held = false; session.state = 'aborted'; }
   session = null;
   $('#game-overlay').hidden = true;
-  $('#idle-caption').hidden = false;
+  $('#start-target').hidden = false;
+  $('#hud').hidden = true;
   $('#pause-button').hidden = true;
   $('#start-button').textContent = '開始';
-  $('#feedback').classList.remove('visible');
   setControls(false);
   updateSettings();
 }
@@ -93,7 +93,7 @@ function pause() {
   session.pause(performance.now());
   if (session.state === 'finished') return;
   $('#game-overlay').hidden = false;
-  $('#overlay-content').innerHTML = '<h3 class="overlay-title">一時停止</h3><div class="overlay-buttons"><button class="primary-button" id="resume-button">再開</button><button class="secondary-button" id="abort-button">中断</button></div>';
+  $('#overlay-content').innerHTML = '<div class="overlay-buttons"><button class="primary-button" id="resume-button">再開</button><button class="secondary-button" id="abort-button">中断</button></div>';
   $('#resume-button').onclick = resume;
   $('#abort-button').onclick = reset;
   $('#pause-button').textContent = '再開';
@@ -128,8 +128,6 @@ function finish() {
     + (r.mode === 'tracking'
       ? metric('追従時間',(r.trackedMs/1000).toFixed(1) + '秒')
       : metric('平均反応',r.reaction === null ? '—' : r.reaction + ' ms') + metric('命中数',r.hits + '回'));
-  $('#result-note').textContent = r.mode === 'tracking' ? '追従率 = 的に重なっていた時間 ÷ 練習時間'
-    : '連続命中 ' + r.streak + '回 / ミス ' + (r.shots-r.hits) + '回' + (r.mode==='reflex' ? ' / 見逃し ' + r.expired + '回' : '');
   renderRecords();
   reset();
   $('#result-dialog').showModal();
@@ -153,12 +151,7 @@ function beep(frequency,seconds) {
   } catch {}
 }
 function showFeedback(event) {
-  if (!event) return;
-  clearTimeout(feedbackTimer);
-  $('#feedback').textContent = event.type === 'hit' ? '+' + event.points : event.type === 'expired' ? '見逃し' : 'ミス';
-  $('#feedback').classList.add('visible');
-  feedbackTimer = setTimeout(() => $('#feedback').classList.remove('visible'), 350);
-  beep(event.type === 'hit' ? 950 : 160, .04);
+  if (event) beep(event.type === 'hit' ? 950 : 160, .04);
 }
 function resize() {
   const rect = arena.getBoundingClientRect();
@@ -174,18 +167,15 @@ function draw() {
   if (session?.target && ['running','paused'].includes(session.state)) {
     const t = session.target;
     const onTarget = session.mode==='tracking' && session.pointer.held && Math.hypot(session.pointer.x-t.x,session.pointer.y-t.y)<=t.radius;
-    ctx.fillStyle = onTarget ? '#ffad9c' : '#f47160';
+    ctx.fillStyle = onTarget ? '#e0ffae' : '#c4f66b';
     ctx.beginPath(); ctx.arc(t.x,t.y,t.radius,0,Math.PI*2); ctx.fill();
-    ctx.fillStyle='#202020';
+    ctx.fillStyle='#111b0e';
     ctx.beginPath(); ctx.arc(t.x,t.y,3,0,Math.PI*2); ctx.fill();
     if (session.mode==='reflex') {
       ctx.beginPath();
       ctx.arc(t.x,t.y,t.radius+6,-Math.PI/2,-Math.PI/2+Math.PI*2*(1-(session.elapsed-t.born)/session.config.lifetime));
-      ctx.strokeStyle='#f4716070'; ctx.lineWidth=2; ctx.stroke();
+      ctx.strokeStyle='#c4f66b70'; ctx.lineWidth=2; ctx.stroke();
     }
-  } else if (session?.mode==='reflex' && session.state==='running') {
-    ctx.font='13px system-ui'; ctx.fillStyle='#888'; ctx.textAlign='center';
-    ctx.fillText('的が現れるまで待ってください',width/2,height/2);
   }
 }
 function frame(now) {
@@ -204,9 +194,6 @@ function frame(now) {
   requestAnimationFrame(frame);
 }
 function renderRecords() {
-  const last = records[0];
-  $('#last-result').hidden = !last;
-  if (last) $('#last-result').textContent = '前回: ' + MODES[last.mode].name + ' / ' + DIFFICULTIES[last.difficulty] + ' / ' + last.duration + '秒 — ' + last.score.toLocaleString('ja-JP') + '点、' + (last.mode==='tracking'?'追従率 ':'命中率 ') + last.accuracy.toFixed(1) + '%';
   $('#export-button').disabled = !records.length;
   if (!records.length) { $('#all-history').innerHTML = '<p class="empty-history">まだ記録がありません。</p>'; return; }
   $('#all-history').innerHTML = '<table><thead><tr><th>日時</th><th>モード / 難易度</th><th>時間</th><th>スコア</th><th>命中・追従率</th><th>平均反応</th></tr></thead><tbody>'
@@ -216,6 +203,7 @@ function renderRecords() {
       + '%</td><td>' + (r.reaction===null?'—':r.reaction+' ms') + '</td></tr>').join('') + '</tbody></table>';
 }
 $('#settings-form').onsubmit = event => { event.preventDefault(); if (busy()) reset(); else start(); };
+$('#start-target').onclick = start;
 document.querySelectorAll('.controls select').forEach(el => el.onchange = updateSettings);
 $('#pause-button').onclick = () => session?.state==='paused' ? resume() : pause();
 $('#retry-button').onclick = start;

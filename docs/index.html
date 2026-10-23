@@ -3,45 +3,40 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#171717">
-  <meta name="description" content="フリック・トラッキング・反応速度を練習できる、シンプルなエイムトレーナー。">
+  <meta name="theme-color" content="#111b0e">
+  <meta name="description" content="エイムトレーニング">
   <title>Aim trainer</title>
-  <link rel="icon" href="./favicon.svg?v=2" type="image/svg+xml">
-  <link rel="stylesheet" href="./style.css?v=2">
-  <script type="module" src="./app.js?v=2"></script>
+  <link rel="icon" href="./favicon.svg?v=3" type="image/svg+xml">
+  <link rel="stylesheet" href="./style.css?v=3">
+  <script type="module" src="./app.js?v=3"></script>
 </head>
 <body>
-  <main>
-    <header class="header">
-      <h1>Aim trainer</h1>
-      <div class="header-actions">
-        <label class="sound-label"><input type="checkbox" id="sound-toggle"> 効果音</label>
-        <button id="fullscreen-button" class="text-button">全画面</button>
-        <button id="history-button" class="text-button">記録</button>
-      </div>
-    </header>
+  <main id="range-panel">
+    <div class="hud" id="hud" hidden aria-label="練習状況">
+      <strong id="hud-time" aria-label="残り時間">0:30</strong>
+      <span><b id="hud-score">0</b>点</span>
+      <span><span id="hud-accuracy-label" class="sr-only">命中率</span><b id="hud-accuracy">—</b></span>
+      <button id="pause-button" hidden>一時停止</button>
+    </div>
+    <div class="aux-controls">
+      <button id="history-button">記録</button>
+      <button popovertarget="options-menu" class="more-button" aria-label="その他の操作">⋯</button>
+    </div>
+    <div id="options-menu" popover>
+      <label><input type="checkbox" id="sound-toggle">効果音</label>
+      <button id="fullscreen-button">全画面</button>
+    </div>
+    <div class="arena" id="arena" tabindex="0" aria-label="表示される的をクリック">
+      <canvas id="arena-canvas" aria-hidden="true"></canvas>
+      <button id="start-target" class="start-target" aria-label="練習を開始" title="開始"></button>
+      <div class="overlay" id="game-overlay" hidden role="status" aria-live="polite"><div id="overlay-content"></div></div>
+    </div>
     <form class="controls" id="settings-form">
-      <label>モード<select id="mode-select"><option value="flick">フリック</option><option value="tracking">トラッキング</option><option value="reflex">反応速度</option></select></label>
-      <label>難易度<select id="difficulty-select"><option value="easy">かんたん</option><option value="normal" selected>ふつう</option><option value="hard">むずかしい</option></select></label>
-      <label>時間<select id="duration-select"><option value="30">30秒</option><option value="60">60秒</option><option value="90">90秒</option></select></label>
+      <select id="mode-select" aria-label="モード"><option value="flick">フリック</option><option value="tracking">トラッキング</option><option value="reflex">反応速度</option></select>
+      <select id="difficulty-select" aria-label="難易度"><option value="easy">かんたん</option><option value="normal" selected>ふつう</option><option value="hard">むずかしい</option></select>
+      <select id="duration-select" aria-label="時間"><option value="30">30秒</option><option value="60">60秒</option><option value="90">90秒</option></select>
       <button class="primary-button" id="start-button" type="submit">開始</button>
     </form>
-    <section class="range" id="range-panel" aria-label="練習エリア">
-      <div class="hud">
-        <div><span>残り</span><strong id="hud-time">0:30</strong></div>
-        <div><span>スコア</span><strong id="hud-score">0</strong></div>
-        <div><span id="hud-accuracy-label">命中率</span><strong id="hud-accuracy">—</strong></div>
-        <button id="pause-button" class="small-button" hidden>一時停止</button>
-      </div>
-      <div class="arena" id="arena" tabindex="0" aria-label="表示される的をクリック">
-        <canvas id="arena-canvas" aria-hidden="true"></canvas>
-        <p class="idle-caption" id="idle-caption">開始を押すと、3秒後に始まります。</p>
-        <div class="overlay" id="game-overlay" hidden role="status" aria-live="polite"><div id="overlay-content"></div></div>
-        <div class="feedback" id="feedback" aria-live="off"></div>
-      </div>
-    </section>
-    <div class="instructions"><p id="mode-instruction">表示される的をクリック。</p><p><kbd>Space</kbd> 開始・一時停止 <span> / </span><kbd>Esc</kbd> 中断</p></div>
-    <p id="last-result" class="last-result" hidden></p>
   </main>
   <dialog id="result-dialog" aria-labelledby="result-title">
     <h2 id="result-title">結果</h2>
@@ -49,14 +44,12 @@
     <div class="result-score"><strong id="result-score">0</strong><span>点</span></div>
     <p id="new-best" class="best-note" hidden>自己ベスト</p>
     <dl id="result-metrics" class="result-metrics"></dl>
-    <p id="result-note" class="muted result-note"></p>
     <div class="dialog-actions"><button class="primary-button" id="retry-button">もう一度</button><button class="secondary-button" id="result-close">閉じる</button></div>
   </dialog>
   <dialog id="history-dialog" class="history-dialog" aria-labelledby="history-title">
-    <div class="dialog-heading"><h2 id="history-title">記録</h2><button id="history-close" class="text-button">閉じる</button></div>
-    <p class="muted history-note">このブラウザに最新100件を保存します。スコアは同じ設定で比較してください。</p>
+    <div class="dialog-heading"><h2 id="history-title">記録</h2><button id="history-close">閉じる</button></div>
     <div id="all-history" class="history-table"></div>
-    <button id="export-button" class="secondary-button export-button">CSVを書き出す</button>
+    <button id="export-button" class="secondary-button export-button">CSV</button>
   </dialog>
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 </body>
