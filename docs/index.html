@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101210">
+  <meta name="description" content="一日一回、狙いを研ぎ澄ませる。フリック、トラッキング、反応速度を磨く無料のエイムトレーニング。">
+  <title>AIMFORGE — 狙いを、研ぎ澄ませ。</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+<svg class="sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+  <symbol id="crosshair" viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><path d="M12 2v5m0 10v5M2 12h5m10 0h5"/><circle cx="12" cy="12" r="1"/></symbol>
+  <symbol id="chart" viewBox="0 0 24 24"><path d="M4 3v17h17M8 14l4-5 4 3 5-7"/></symbol>
+  <symbol id="book" viewBox="0 0 24 24"><path d="M12 5v15M3 4c4-1 6 0 9 2 3-2 5-3 9-2v15c-4-1-6 0-9 2-3-2-5-3-9-2Z"/></symbol>
+  <symbol id="arrow" viewBox="0 0 24 24"><path d="M4 12h15m-6-6 6 6-6 6"/></symbol>
+  <symbol id="bolt" viewBox="0 0 24 24"><path d="m14 2-10 12h7l-1 8 10-12h-7Z"/></symbol>
+  <symbol id="track" viewBox="0 0 24 24"><circle cx="16" cy="8" r="4"/><path d="M3 19h5m-2-5h4m-5-5h4m4 3-5 7"/></symbol>
+  <symbol id="clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></symbol>
+  <symbol id="trophy" viewBox="0 0 24 24"><path d="M8 3h8v7a4 4 0 0 1-8 0V3ZM8 5H4v3a4 4 0 0 0 4 4m8-7h4v3a4 4 0 0 1-4 4M12 14v6m-5 1h10"/></symbol>
+  <symbol id="sound" viewBox="0 0 24 24"><path d="m11 4-6 5H2v6h3l6 5Zm4 4a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></symbol>
+  <symbol id="mute" viewBox="0 0 24 24"><path d="m11 4-6 5H2v6h3l6 5Zm5 5 6 6m0-6-6 6"/></symbol>
+  <symbol id="expand" viewBox="0 0 24 24"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></symbol>
+  <symbol id="check" viewBox="0 0 24 24"><path d="m5 12 5 5L20 7"/></symbol>
+  <symbol id="close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+  <symbol id="mouse" viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="6"/><path d="M12 2v7"/></symbol>
+  <symbol id="download" viewBox="0 0 24 24"><path d="M12 3v12m-4-4 4 4 4-4M4 16v5h16v-5"/></symbol>
+</defs></svg>
+<aside class="sidebar">
+  <a class="brand" href="#training" aria-label="AIMFORGE ホーム"><span class="brand-mark"><svg><use href="#crosshair"/></svg></span>AIMFORGE<span class="brand-dot">+</span></a>
+  <div class="sidebar-label">YOUR TRAINING SPACE</div>
+  <nav aria-label="メインナビゲーション">
+    <button class="nav-item active" data-view="training" aria-current="page"><svg><use href="#crosshair"/></svg>トレーニング<span class="nav-indicator"></span></button>
+    <button class="nav-item" data-view="performance"><svg><use href="#chart"/></svg>パフォーマンス</button>
+    <button class="nav-item" data-view="guide"><svg><use href="#book"/></svg>トレーニングガイド</button>
+  </nav>
+  <div class="sidebar-bottom"><div class="daily-note"><span class="little-cross">+</span><p>昨日の自分を、<br>一撃ずつ超えていく。</p><span>CONSISTENCY IS EVERYTHING.</span></div><div class="system"><span class="status-dot"></span> ALL SYSTEMS READY <span>v1.0</span></div></div>
+</aside>
+<div class="app-shell">
+  <header class="topbar"><div class="breadcrumb">WORKSPACE <span>/</span> <strong id="breadcrumb">トレーニング</strong></div><div class="topbar-right"><span class="local-tag"><i></i> LOCAL RECORDS</span><span class="avatar">AF</span></div></header>
+  <main>
+    <section id="training-view" class="view">
+      <div class="page-heading"><div><div class="eyebrow">MAKE EVERY SHOT COUNT</div><h1>狙いを、研ぎ澄ませ<span>。</span></h1><p>集中する。狙う。撃ち抜く。次のレベルへの一歩を、ここから。</p></div><div class="session-count"><svg><use href="#bolt"/></svg><div><strong id="today-count">0</strong><span>今日のセッション</span></div></div></div>
+      <div class="stats-row">
+        <div class="stat-card"><span class="stat-icon"><svg><use href="#trophy"/></svg></span><div><div class="stat-label">自己ベスト <span>フリック / STANDARD / 30秒</span></div><strong id="best-score">—</strong><small>PTS</small></div><span class="stat-decor">↗</span></div>
+        <div class="stat-card"><span class="stat-icon"><svg><use href="#crosshair"/></svg></span><div><div class="stat-label">最高命中率 <span>クリック系モード</span></div><strong id="best-accuracy">—</strong><small>%</small></div><div class="micro-bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+        <div class="stat-card"><span class="stat-icon"><svg><use href="#clock"/></svg></span><div><div class="stat-label">最速平均反応 <span>反応速度モード</span></div><strong id="best-reaction">—</strong><small>MS</small></div><span class="stat-decor pulse-line">⌁</span></div>
+      </div>
+      <div class="workspace-grid">
+        <div class="range-column">
+          <div class="section-title"><h2>トレーニングモード</h2><span>01 — SELECT YOUR FOCUS</span></div>
+          <div class="mode-selector" role="group" aria-label="トレーニングモード">
+            <button class="mode-card selected" data-mode="flick" aria-pressed="true"><svg><use href="#crosshair"/></svg><div><strong>フリック</strong><span>FLICK SHOT</span></div><span class="radio-dot"></span></button>
+            <button class="mode-card" data-mode="tracking" aria-pressed="false"><svg><use href="#track"/></svg><div><strong>トラッキング</strong><span>SMOOTH TRACKING</span></div><span class="radio-dot"></span></button>
+            <button class="mode-card" data-mode="reflex" aria-pressed="false"><svg><use href="#bolt"/></svg><div><strong>反応速度</strong><span>QUICK REFLEX</span></div><span class="radio-dot"></span></button>
+          </div>
+          <section class="range-panel" id="range-panel" aria-label="トレーニングエリア">
+            <div class="range-toolbar"><div><span class="status-dot" id="range-dot"></span><strong id="range-status">射撃場</strong><span class="range-version">RANGE_001</span></div><div class="range-actions"><button class="icon-button" id="sound-button" aria-label="効果音をオンにする" aria-pressed="false" title="効果音"><svg><use href="#mute"/></svg></button><span class="divider"></span><button class="icon-button" id="fullscreen-button" aria-label="射撃場を全画面表示" title="全画面"><svg><use href="#expand"/></svg></button></div></div>
+            <div class="game-hud"><div><span>TIME LEFT</span><strong id="hud-time">00:30</strong></div><div><span>SCORE</span><strong id="hud-score">0000</strong></div><div><span id="hud-accuracy-label">ACCURACY</span><strong id="hud-accuracy">—<small>%</small></strong></div><button id="pause-button" class="pause-button" hidden>一時停止</button></div>
+            <div class="arena" id="arena" tabindex="0" aria-label="射撃場。練習開始後、的をクリックしてください。">
+              <canvas id="arena-canvas" aria-hidden="true"></canvas>
+              <div class="arena-coord top-left">X: 000 <span>Y: 000</span></div><div class="arena-coord bottom-right">PRECISION TRAINING ENVIRONMENT</div>
+              <div class="idle-art" id="idle-art" aria-hidden="true"><span class="orbit orbit-one"></span><span class="orbit orbit-two"></span><span class="idle-target"><i></i><b></b></span><span class="satellite sat-one"><i></i></span><span class="satellite sat-two"><i></i></span><span class="cross-tick tick-one">+</span><span class="cross-tick tick-two">+</span><span class="target-coordinate">TARGET LOCKED<br><strong>35.6895° N</strong></span></div>
+              <div class="arena-idle-caption" id="idle-caption"><span class="ready-pill"><i></i> READY WHEN YOU ARE</span><p>照準を合わせて、自分を超えよう。</p><span>右の設定からトレーニングを開始</span></div>
+              <div class="game-overlay" id="game-overlay" hidden role="status" aria-live="polite"><div id="overlay-content"></div></div>
+              <div class="feedback" id="feedback" aria-live="off"></div>
+            </div>
+            <div class="range-footer"><span><svg><use href="#mouse"/></svg><span id="mode-instruction">表示される的を、正確にクリック</span></span><span><kbd>SPACE</kbd> 開始・一時停止 <span class="footer-sep">/</span> <kbd>ESC</kbd> 中断</span></div>
+          </section>
+          <div class="training-tip"><span class="tip-mark">i</span><p id="training-tip">速さより、まずは正確さ。的の中心を意識して、無理のない速度から始めよう。</p><span>COACH'S NOTE</span></div>
+        </div>
+        <aside class="settings-panel"><div class="section-title"><h2>セッション設定</h2><span>02</span></div><div class="settings-body">
+          <div class="settings-group"><div class="setting-label">難易度<span id="difficulty-tag">BALANCED</span></div><div class="difficulty-options" role="group" aria-label="難易度"><button data-difficulty="easy" aria-pressed="false"><span class="difficulty-bars"><i></i></span><div><strong>イージー</strong><small>大きな的で、基礎を固める</small></div><span class="option-check"></span></button><button data-difficulty="normal" class="selected" aria-pressed="true"><span class="difficulty-bars"><i></i><i></i></span><div><strong>スタンダード</strong><small>精度とスピードを磨く</small></div><span class="option-check"></span></button><button data-difficulty="hard" aria-pressed="false"><span class="difficulty-bars"><i></i><i></i><i></i></span><div><strong>ハード</strong><small>小さな的で、限界に挑む</small></div><span class="option-check"></span></button></div></div>
+          <div class="settings-group duration-group"><div class="setting-label">セッション時間<svg><use href="#clock"/></svg></div><div class="segmented" role="group" aria-label="セッション時間"><button class="selected" data-duration="30" aria-pressed="true">30<span>秒</span></button><button data-duration="60" aria-pressed="false">60<span>秒</span></button><button data-duration="90" aria-pressed="false">90<span>秒</span></button></div></div>
+          <div class="session-summary"><div><span>モード</span><strong id="summary-mode">フリック</strong></div><div><span>ターゲット</span><strong id="summary-target">固定・ランダム出現</strong></div><div><span>操作</span><strong id="summary-control">左クリック</strong></div></div>
+          <button class="primary-button" id="start-button"><svg><use href="#bolt"/></svg><span>トレーニング開始</span><svg><use href="#arrow"/></svg></button><p class="start-hint">3秒カウントダウンでスタート</p>
+        </div></aside>
+      </div>
+      <section class="recent-section"><div class="section-title"><h2>最近のセッション <span id="history-count">0</span></h2><button class="text-button" data-open-performance>すべての記録<svg><use href="#arrow"/></svg></button></div><div id="recent-history" class="history-table"></div></section>
+      <footer class="page-footer"><span>AIMFORGE <b>／</b> BUILT FOR YOUR NEXT LEVEL.</span><span>記録はお使いのブラウザに保存されます。</span></footer>
+    </section>
+    <section id="performance-view" class="view" hidden><div class="page-heading"><div><div class="eyebrow">YOUR PROGRESS, YOUR PROOF</div><h1>積み重ねを、見える形に<span>。</span></h1><p>一回の結果よりも、続けた先の変化を。</p></div><button id="export-button" class="secondary-button"><svg><use href="#download"/></svg>CSVを書き出す</button></div><div class="performance-summary" id="performance-summary"></div><div class="chart-panel"><div class="section-title"><h2>最近10回の精度</h2><span>ACCURACY / TRACKING RATE</span></div><div class="chart-bars" id="chart-bars"></div><p class="chart-note">フリック・反応速度は命中率、トラッキングは追従率を表示します。</p></div><section class="recent-section"><div class="section-title"><h2>セッション履歴</h2><span>最新100件を保存</span></div><div id="all-history" class="history-table"></div></section></section>
+    <section id="guide-view" class="view" hidden><div class="page-heading"><div><div class="eyebrow">TRAIN SMARTER. AIM BETTER.</div><h1>いいエイムは、習慣から<span>。</span></h1><p>毎日5分、自分のペースで。一つずつ、確かな感覚に。</p></div></div><div class="guide-grid"><article><span class="guide-number">01</span><svg><use href="#crosshair"/></svg><h2>フリック</h2><p>ランダムに現れる的をクリック。的を撃ち抜くと、次の的が現れます。素早く正確に当てるほどスコアが高くなり、連続命中でボーナスが加算されます。</p><div>磨ける力 <strong>照準の移動・止める精度</strong></div></article><article><span class="guide-number">02</span><svg><use href="#track"/></svg><h2>トラッキング</h2><p>左ボタンを押したまま、動く的をカーソルで追い続けます。セッション全体のうち、押しながら的に重なっていた時間が追従率になります。</p><div>磨ける力 <strong>滑らかな追従・持続的な集中</strong></div></article><article><span class="guide-number">03</span><svg><use href="#bolt"/></svg><h2>反応速度</h2><p>的が現れるまで待ち、出現した瞬間にクリック。的は一定時間で消えます。待機中のクリックはミスになるため、焦らず出現を見極めましょう。</p><div>磨ける力 <strong>視覚反応・瞬間的な判断</strong></div></article></div><div class="guide-advice"><h2>トレーニングのコツ</h2><p>マウス感度と姿勢を揃え、まずはイージー・30秒から。命中率が安定してから難易度を上げましょう。ブラウザの倍率は100%がおすすめです。疲れを感じたら、手と目を休ませてください。</p><p><kbd>SPACE</kbd> 開始・一時停止　 <kbd>ESC</kbd> 中断。タブを離れると練習は自動で一時停止します。中断したセッションは記録されません。</p><button class="primary-button" data-open-training>トレーニングへ<svg><use href="#arrow"/></svg></button></div></section>
+  </main>
+</div>
+<dialog id="result-dialog" aria-labelledby="result-title"><button class="dialog-close icon-button" id="result-close" aria-label="結果を閉じる"><svg><use href="#close"/></svg></button><div class="eyebrow">SESSION COMPLETE</div><div class="result-icon"><svg><use href="#trophy"/></svg></div><h2 id="result-title">ナイスセッション。</h2><p id="result-subtitle"></p><span id="new-best" class="ready-pill" hidden>NEW PERSONAL BEST</span><div class="result-score"><strong id="result-score">0</strong><span>POINTS</span></div><div class="result-metrics" id="result-metrics"></div><p id="result-note"></p><button class="primary-button" id="retry-button">もう一度トレーニング<svg><use href="#arrow"/></svg></button><button class="text-button" id="result-back">ダッシュボードに戻る</button></dialog>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>
